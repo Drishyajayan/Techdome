@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  frontend:
+    build: ./Techdome-frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  backend:
+    build: ./Techdome-backend
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    environment:
+      - DB=mongodb://root:password@database:27017/techdome_db
+    depends_on:
+      - database
+
+  database:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: techdome_db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
